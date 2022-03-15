@@ -7,3 +7,4 @@
 [submodule "lib/yearn-vaults"]
 	path = lib/yearn-vaults
 	url = https://github.com/storming0x/yearn-vaults
+	branch = feat/update-sol-8

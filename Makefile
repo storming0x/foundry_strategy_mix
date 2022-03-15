@@ -3,7 +3,7 @@
 -include .env
 
 # deps
-# update:; forge update
+update:; forge update
 
 # Build & test
 build  :; forge build
