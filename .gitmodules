@@ -8,3 +8,6 @@
 	path = lib/yearn-vaults
 	url = https://github.com/storming0x/yearn-vaults
 	branch = feat/update-sol-8
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/brockelmore/forge-std
