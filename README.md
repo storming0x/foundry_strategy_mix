@@ -102,4 +102,5 @@ make trace
 - [Forge Standard Lib](https://github.com/brockelmore/forge-std)
 - [Awesome Foundry](https://github.com/crisgarner/awesome-foundry)
 - [Foundry Book](https://onbjerg.github.io/foundry-book/index.html)
+- [Learn Foundry Tutorial](https://www.youtube.com/watch?v=Rp_V7bYiTCM)
 
