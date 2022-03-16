@@ -2,11 +2,11 @@
 
 ## What you'll find here
 
-- Basic Solidity Smart Contract for creating your own Yearn Strategy ([`contracts/Strategy.sol`](contracts/Strategy.sol))
+- Basic Solidity Smart Contract for creating your own Yearn Strategy ([`src/Strategy.sol`](src/Strategy.sol))
 
 - Configured github template with Foundry framework for starting your yearn strategy project.
 
-- Sample test suite. ([`tests/`](tests))
+- Sample test suite. ([`src/test/`](tests))
 
 
 ## How does it work for the User
