@@ -2,7 +2,7 @@
 pragma solidity ^0.8.12;
 pragma abicoder v2;
 
-import "ds-test/test.sol";
+import {ExtendedDSTest} from "./ExtendedDSTest.sol";
 import {stdCheats} from "forge-std/stdlib.sol";
 import {IVault} from "../../interface/Vault.sol";
 
@@ -14,7 +14,7 @@ import {Strategy} from "../../Strategy.sol";
 string constant vaultArtifact = 'artifacts/Vault.json';
 
 // Base fixture deploying Vault
-contract StrategyFixture is DSTest, stdCheats {
+contract StrategyFixture is ExtendedDSTest, stdCheats {
     IVault public vault;
     Strategy public strategy;
 
@@ -93,5 +93,5 @@ contract StrategyFixture is DSTest, stdCheats {
             1_000
         );
     }
-    
+
 }
