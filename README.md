@@ -41,28 +41,26 @@ cd foundry-yearn-strategy
 make build
 ```
 
-5. Run tests
+5. Sign up for [Infura](https://infura.io/) and generate an API key and copy your RPC url. Store it in the `ETH_RPC_URL` environment variable.
+NOTE: you can use other services.
+
+6. Use .env file
+  1. Make a copy of `.env.example`
+  2. Add the values for `ETH_RPC_URL` and other example vars
+     NOTE: If you set up a global environment variable, that will take precedence
+
+7. Run tests
+
+NOTE: tests run in fork environment, you need to setup step 6 to be able to run these commands.
 
 ```sh
 make test
 ```
+Run tests with traces (very useful)
 
-6. Sign up for [Infura](https://infura.io/) and generate an API key. Store it in the `WEB3_INFURA_PROJECT_ID` environment variable.
-
-```bash
-export WEB3_INFURA_PROJECT_ID=YourProjectID
+```sh
+make trace
 ```
-
-7. Sign up for [Etherscan](www.etherscan.io) and generate an API key. This is required for fetching source codes of the mainnet contracts we will be interacting with. Store the API key in the `ETHERSCAN_TOKEN` environment variable.
-
-```bash
-export ETHERSCAN_TOKEN=YourApiToken
-```
-
-- Optional Use .env file
-  1. Make a copy of `.env.example`
-  2. Add the values for `ETHERSCAN_TOKEN` and `WEB3_INFURA_PROJECT_ID`
-     NOTE: If you set up a global environment variable, that will take precedence
 
 ## Basic Use
 

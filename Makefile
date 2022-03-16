@@ -7,7 +7,10 @@ update:; forge update
 
 # Build & test
 build  :; forge build
-test   :; forge test
-trace   :; forge test -vvv
+test   :; forge test --fork-url ${ETH_RPC_URL}
+trace   :; forge test -vvv --fork-url ${ETH_RPC_URL}
+# local tests without fork
+test-local  :; forge test
+trace-local  :; forge test -vvv
 clean  :; forge clean
 snapshot :; forge snapshot

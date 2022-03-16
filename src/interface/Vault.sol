@@ -16,7 +16,7 @@ struct StrategyParams {
 }
 
 
-interface VaultAPI is IERC20 {
+interface IVault is IERC20 {
     function name() external view returns (string calldata);
 
     function symbol() external view returns (string calldata);
@@ -32,6 +32,26 @@ interface VaultAPI is IERC20 {
         uint256 expiry,
         bytes calldata signature
     ) external returns (bool);
+
+    function initialize(
+        address token,
+        address governance,
+        address rewards,
+        string memory name,
+        string memory symbol,
+        address guardian,
+        address management 
+    ) external;
+
+    function addStrategy(
+        address _strategy,
+        uint256 _debtRatio,
+        uint256 _minDebtPerHarvest,
+        uint256 _maxDebtPerHarvest,
+        uint256 _performanceFee
+    ) external;
+
+    function setDepositLimit(uint256 amount) external;
 
     // NOTE: Vyper produces multiple signatures for a given function with "default" args
     function deposit() external returns (uint256);
