@@ -52,9 +52,9 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     function deployStrategy(
         address _vault
     ) public returns (address) {
-        strategy = new Strategy(_vault);
+        Strategy _strategy = new Strategy(_vault);
 
-        return address(strategy);
+        return address(_strategy);
     }
 
     // Deploys a vault and strategy attached to vault
@@ -66,7 +66,8 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         string memory _symbol,
         address _guardian,
         address _management,
-        address _keeper
+        address _keeper,
+        address _strategist
     ) public returns (address _vault, address _strategy) {
         _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
@@ -81,8 +82,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
             _management
         );
 
+        vm_std_cheats.prank(_strategist);
         _strategy = deployStrategy(_vault);
+        strategy = Strategy(_strategy);
 
+        vm_std_cheats.prank(_strategist);
         strategy.setKeeper(_keeper);
 
         vault.addStrategy(

@@ -6,6 +6,9 @@ import "forge-std/console.sol";
 
 import {StrategyFixture} from "./utils/Test.sol";
 
+// NOTE: if the name of the strat or file changes this needs to be updated
+import {Strategy} from "../Strategy.sol";
+
 // NOTE: maybe is worth to make several contracts to test several operations
 // and different strategy functionality
 contract StrategyTest is StrategyFixture {
@@ -20,6 +23,7 @@ contract StrategyTest is StrategyFixture {
     address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
     address public user = address(1337);
     address public user2 = address(7331);
+    address public strategist = address(1);
     uint256 WETH_AMT = 10 ** 18;
 
     // setup is run on before each test
@@ -39,7 +43,8 @@ contract StrategyTest is StrategyFixture {
             "",
             address(this),
             address(this),
-            address(this)
+            address(this),
+            strategist
         );
 
         // do here additional setup
@@ -62,6 +67,7 @@ contract StrategyTest is StrategyFixture {
         assertEq(address(strategy.vault()), address(vault));
     }
 
+    /// Test Operations
     function testStrategyOperation(uint256 _amount) public {
         vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
 
@@ -209,5 +215,66 @@ contract StrategyTest is StrategyFixture {
 
         strategy.harvestTrigger(0);
         strategy.tendTrigger(0);
+    }
+
+    /// Test Revoke
+    function testRevokeStrategyFromVault(uint256 _amount) public {
+        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
+
+        // Deposit to the vault and harvest
+        vm_std_cheats.prank(user);
+        want.approve(address(vault), _amount);
+        vm_std_cheats.prank(user);
+        vault.deposit(_amount);
+        skip(1);
+        strategy.harvest();
+        assertEq(strategy.estimatedTotalAssets(), _amount);
+
+        // In order to pass these tests, you will need to implement prepareReturn.
+        // TODO: uncomment the following lines.
+        // vault.revokeStrategy(address(strategy));
+        // skip(1);
+        // strategy.harvest();
+        // assertEq(want.balanceOf(address(vault)), _amount);
+    }
+
+    function testRevokeStrategyFromStrategy(uint256 _amount) public {
+        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
+
+        vm_std_cheats.prank(user);
+        want.approve(address(vault), _amount);
+        vm_std_cheats.prank(user);
+        vault.deposit(_amount);
+        skip(1);
+        strategy.harvest();
+        assertEq(strategy.estimatedTotalAssets(), _amount);
+
+        strategy.setEmergencyExit();
+        skip(1);
+        strategy.harvest();
+        assertEq(want.balanceOf(address(vault)), _amount);
+    }
+
+    /// Test migrations
+    // TODO: Add tests that show proper migration of the strategy to a newer one
+    // Use another copy of the strategy to simmulate the migration
+    // Show that nothing is lost.
+    function testMigration(uint256 _amount) public {
+        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
+
+        // Deposit to the vault and harvest
+        vm_std_cheats.prank(user);
+        want.approve(address(vault), _amount);
+        vm_std_cheats.prank(user);
+        vault.deposit(_amount);
+        skip(1);
+        strategy.harvest();
+        assertEq(strategy.estimatedTotalAssets(), _amount);
+
+        // Migrate to a new strategy
+        vm_std_cheats.prank(strategist);
+        address newStrategyAddr = deployStrategy(address(vault));
+        vault.migrateStrategy(address(strategy), newStrategyAddr);
+        assertEq(Strategy(newStrategyAddr).estimatedTotalAssets(), _amount);
     }
 }
