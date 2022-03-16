@@ -91,10 +91,17 @@ To run the tests:
 make test
 ```
 
+to run tests with traces (using console.sol):
+
+```
+make trace
+```
+
 # Resources
 
 - Yearn [Discord channel](https://discord.com/invite/6PNv2nF/)
-- [Getting help on Foundy](https://github.com/gakonst/foundry#getting-help)
+- [Getting help on Foundry](https://github.com/gakonst/foundry#getting-help)
+- [Forge Standard Lib](https://github.com/brockelmore/forge-std)
 - [Awesome Foundry](https://github.com/crisgarner/awesome-foundry)
 - [Foundry Book](https://onbjerg.github.io/foundry-book/index.html)
 
