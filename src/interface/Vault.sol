@@ -40,7 +40,7 @@ interface IVault is IERC20 {
         string memory name,
         string memory symbol,
         address guardian,
-        address management 
+        address management
     ) external;
 
     function addStrategy(
@@ -123,6 +123,8 @@ interface IVault is IERC20 {
      * external dependency.
      */
     function revokeStrategy() external;
+
+    function updateStrategyDebtRatio(address strategy, uint256 debtRatio) external;
 
     /**
      * View the governance address of the Vault to assert privileged functions
