@@ -4,6 +4,7 @@ pragma solidity ^0.8.12;
 import "ds-test/test.sol";
 
 contract ExtendedDSTest is DSTest {
+    // solhint-disable-next-line
     function assertNeq(address a, address b) internal {
         if (a == b) {
             emit log("Error: a != b not satisfied [address]");

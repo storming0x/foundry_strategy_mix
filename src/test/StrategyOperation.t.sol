@@ -128,6 +128,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
 
         vm_std_cheats.prank(user);
+        // solhint-disable-next-line
         (bool sent, ) = address(weth).call{value: WETH_AMT}("");
         require(sent, "failed to send ether");
 
