@@ -13,7 +13,7 @@ import {Strategy} from "../../Strategy.sol";
 
 // Artifact paths for deploying from the deps folder, assumes that the command is run from
 // the project root.
-string constant vaultArtifact = 'artifacts/Vault.json';
+string constant vaultArtifact = "artifacts/Vault.json";
 
 // Base fixture deploying Vault
 contract StrategyFixture is ExtendedDSTest, stdCheats {
@@ -25,12 +25,14 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     IERC20 public want;
 
     // NOTE: feel free change these vars to adjust for your strategy testing
-    IERC20 public immutable DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-    IERC20 public immutable WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+    IERC20 public immutable DAI =
+        IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    IERC20 public immutable WETH =
+        IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
     address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
     address public user = address(1337);
     address public strategist = address(1);
-    uint256 public WETH_AMT = 10 ** 18;
+    uint256 public WETH_AMT = 10**18;
 
     function setUp() public virtual {
         weth = WETH;
@@ -83,9 +85,7 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     }
 
     // Deploys a strategy
-    function deployStrategy(
-        address _vault
-    ) public returns (address) {
+    function deployStrategy(address _vault) public returns (address) {
         Strategy _strategy = new Strategy(_vault);
 
         return address(_strategy);
@@ -123,13 +123,6 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         vm_std_cheats.prank(_strategist);
         strategy.setKeeper(_keeper);
 
-        vault.addStrategy(
-            _strategy,
-            10_000,
-            0,
-            type(uint256).max,
-            1_000
-        );
+        vault.addStrategy(_strategy, 10_000, 0, type(uint256).max, 1_000);
     }
-
 }
