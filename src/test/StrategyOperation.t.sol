@@ -1,56 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.12;
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "forge-std/console.sol";
 
-import {StrategyFixture} from "./utils/Test.sol";
+import {StrategyFixture} from "./utils/StrategyFixture.sol";
 
-// NOTE: if the name of the strat or file changes this needs to be updated
-import {Strategy} from "../Strategy.sol";
-
-// NOTE: maybe is worth to make several contracts to test several operations
-// and different strategy functionality
-contract StrategyTest is StrategyFixture {
-    using SafeERC20 for IERC20;
-
-    IERC20 want;
-    IERC20 weth;
-
-    // NOTE: feel free change these vars to adjust for your strategy testing
-    IERC20 public immutable DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-    IERC20 public immutable WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
-    address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
-    address public user = address(1337);
-    address public user2 = address(7331);
-    address public strategist = address(1);
-    uint256 WETH_AMT = 10 ** 18;
+contract StrategyOperationsTest is StrategyFixture {
 
     // setup is run on before each test
     function setUp() public override {
         // setup vault
         super.setUp();
-
-        // replace with your token
-        want = DAI;
-        weth = WETH;
-
-        deployVaultAndStrategy(
-            address(want),
-            address(this),
-            address(this),
-            "",
-            "",
-            address(this),
-            address(this),
-            address(this),
-            strategist
-        );
-
-        // do here additional setup
-        vault.setDepositLimit(type(uint256).max);
-        tip(address(want), address(user), 10000e18);
-        vm_std_cheats.deal(user, 10_000 ether);
     }
 
     function testSetupVaultOK() public {
@@ -133,7 +92,7 @@ contract StrategyTest is StrategyFixture {
         skip(1);
         strategy.harvest();
         skip(3600 * 6);
-        
+
         // TODO: Uncomment the lines below
         // uint256 profit = want.balanceOf(address(vault));
         // assertGt(want.balanceOf(address(strategy) + profit), _amount);
@@ -217,64 +176,4 @@ contract StrategyTest is StrategyFixture {
         strategy.tendTrigger(0);
     }
 
-    /// Test Revoke
-    function testRevokeStrategyFromVault(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
-
-        // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
-        want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
-        vault.deposit(_amount);
-        skip(1);
-        strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
-
-        // In order to pass these tests, you will need to implement prepareReturn.
-        // TODO: uncomment the following lines.
-        // vault.revokeStrategy(address(strategy));
-        // skip(1);
-        // strategy.harvest();
-        // assertEq(want.balanceOf(address(vault)), _amount);
-    }
-
-    function testRevokeStrategyFromStrategy(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
-
-        vm_std_cheats.prank(user);
-        want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
-        vault.deposit(_amount);
-        skip(1);
-        strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
-
-        strategy.setEmergencyExit();
-        skip(1);
-        strategy.harvest();
-        assertEq(want.balanceOf(address(vault)), _amount);
-    }
-
-    /// Test migrations
-    // TODO: Add tests that show proper migration of the strategy to a newer one
-    // Use another copy of the strategy to simmulate the migration
-    // Show that nothing is lost.
-    function testMigration(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
-
-        // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
-        want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
-        vault.deposit(_amount);
-        skip(1);
-        strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
-
-        // Migrate to a new strategy
-        vm_std_cheats.prank(strategist);
-        address newStrategyAddr = deployStrategy(address(vault));
-        vault.migrateStrategy(address(strategy), newStrategyAddr);
-        assertEq(Strategy(newStrategyAddr).estimatedTotalAssets(), _amount);
-    }
 }
