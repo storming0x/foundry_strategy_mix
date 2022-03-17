@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches:
+    - master
+    - develop
+  pull_request:
+
+jobs:
+  check:
+    name: Foundry project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run tests
+        env:
+          ETH_RPC_URL: https://mainnet.infura.io/v3/b7821200399e4be2b4e5dbdf06fbe85b
+        run: make trace
