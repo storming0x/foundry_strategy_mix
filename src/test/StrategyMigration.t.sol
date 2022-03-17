@@ -7,7 +7,6 @@ import {StrategyFixture} from "./utils/StrategyFixture.sol";
 import {Strategy} from "../Strategy.sol";
 
 contract StrategyMigrationTest is StrategyFixture {
-
     function setUp() public override {
         super.setUp();
     }
@@ -33,5 +32,4 @@ contract StrategyMigrationTest is StrategyFixture {
         vault.migrateStrategy(address(strategy), newStrategyAddr);
         assertEq(Strategy(newStrategyAddr).estimatedTotalAssets(), _amount);
     }
-
 }

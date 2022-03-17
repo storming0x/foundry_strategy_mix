@@ -4,7 +4,6 @@ pragma solidity ^0.8.12;
 import {StrategyFixture} from "./utils/StrategyFixture.sol";
 
 contract StrategyRevokeTest is StrategyFixture {
-
     function setUp() public override {
         super.setUp();
     }
@@ -45,5 +44,4 @@ contract StrategyRevokeTest is StrategyFixture {
         strategy.harvest();
         assertEq(want.balanceOf(address(vault)), _amount);
     }
-
 }

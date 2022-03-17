@@ -5,7 +5,6 @@ import "forge-std/console.sol";
 import {StrategyFixture} from "./utils/StrategyFixture.sol";
 
 contract StrategyOperationsTest is StrategyFixture {
-
     // setup is run on before each test
     function setUp() public override {
         // setup vault
@@ -36,7 +35,6 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
         assertEq(want.balanceOf(address(vault)), _amount);
-
 
         // Note: need to check if this is equivalent to chain.sleep in brownie
         skip(60 * 3); // skip 3 minutes
@@ -175,5 +173,4 @@ contract StrategyOperationsTest is StrategyFixture {
         strategy.harvestTrigger(0);
         strategy.tendTrigger(0);
     }
-
 }
