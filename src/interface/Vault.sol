@@ -124,6 +124,10 @@ interface IVault is IERC20 {
      */
     function revokeStrategy() external;
 
+    function revokeStrategy(address strategy) external;
+
+    function migrateStrategy(address oldVersion, address newVersion) external;
+
     function updateStrategyDebtRatio(address strategy, uint256 debtRatio) external;
 
     /**

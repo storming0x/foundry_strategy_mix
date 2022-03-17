@@ -2,6 +2,8 @@
 pragma solidity ^0.8.12;
 pragma abicoder v2;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ExtendedDSTest} from "./ExtendedDSTest.sol";
 import {stdCheats} from "forge-std/stdlib.sol";
 import {IVault} from "../../interface/Vault.sol";
@@ -15,11 +17,43 @@ string constant vaultArtifact = 'artifacts/Vault.json';
 
 // Base fixture deploying Vault
 contract StrategyFixture is ExtendedDSTest, stdCheats {
+    using SafeERC20 for IERC20;
+
     IVault public vault;
     Strategy public strategy;
+    IERC20 public weth;
+    IERC20 public want;
+
+    // NOTE: feel free change these vars to adjust for your strategy testing
+    IERC20 public immutable DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    IERC20 public immutable WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+    address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
+    address public user = address(1337);
+    address public strategist = address(1);
+    uint256 public WETH_AMT = 10 ** 18;
 
     function setUp() public virtual {
-        // setup vault
+        weth = WETH;
+
+        // replace with your token
+        want = DAI;
+
+        deployVaultAndStrategy(
+            address(want),
+            address(this),
+            address(this),
+            "",
+            "",
+            address(this),
+            address(this),
+            address(this),
+            strategist
+        );
+
+        // do here additional setup
+        vault.setDepositLimit(type(uint256).max);
+        tip(address(want), address(user), 10000e18);
+        vm_std_cheats.deal(user, 10_000 ether);
     }
 
     // Deploys a vault
@@ -52,9 +86,9 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     function deployStrategy(
         address _vault
     ) public returns (address) {
-        strategy = new Strategy(_vault);
+        Strategy _strategy = new Strategy(_vault);
 
-        return address(strategy);
+        return address(_strategy);
     }
 
     // Deploys a vault and strategy attached to vault
@@ -66,7 +100,8 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         string memory _symbol,
         address _guardian,
         address _management,
-        address _keeper
+        address _keeper,
+        address _strategist
     ) public returns (address _vault, address _strategy) {
         _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
@@ -81,8 +116,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
             _management
         );
 
+        vm_std_cheats.prank(_strategist);
         _strategy = deployStrategy(_vault);
+        strategy = Strategy(_strategy);
 
+        vm_std_cheats.prank(_strategist);
         strategy.setKeeper(_keeper);
 
         vault.addStrategy(

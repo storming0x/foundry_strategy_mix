@@ -1,51 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.12;
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "forge-std/console.sol";
 
-import {StrategyFixture} from "./utils/Test.sol";
+import {StrategyFixture} from "./utils/StrategyFixture.sol";
 
-// NOTE: maybe is worth to make several contracts to test several operations
-// and different strategy functionality
-contract StrategyTest is StrategyFixture {
-    using SafeERC20 for IERC20;
-
-    IERC20 want;
-    IERC20 weth;
-
-    // NOTE: feel free change these vars to adjust for your strategy testing
-    IERC20 public immutable DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-    IERC20 public immutable WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
-    address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
-    address public user = address(1337);
-    address public user2 = address(7331);
-    uint256 WETH_AMT = 10 ** 18;
+contract StrategyOperationsTest is StrategyFixture {
 
     // setup is run on before each test
     function setUp() public override {
         // setup vault
         super.setUp();
-
-        // replace with your token
-        want = DAI;
-        weth = WETH;
-
-        deployVaultAndStrategy(
-            address(want),
-            address(this),
-            address(this),
-            "",
-            "",
-            address(this),
-            address(this),
-            address(this)
-        );
-
-        // do here additional setup
-        vault.setDepositLimit(type(uint256).max);
-        tip(address(want), address(user), 10000e18);
-        vm_std_cheats.deal(user, 10_000 ether);
     }
 
     function testSetupVaultOK() public {
@@ -62,6 +26,7 @@ contract StrategyTest is StrategyFixture {
         assertEq(address(strategy.vault()), address(vault));
     }
 
+    /// Test Operations
     function testStrategyOperation(uint256 _amount) public {
         vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
 
@@ -127,7 +92,7 @@ contract StrategyTest is StrategyFixture {
         skip(1);
         strategy.harvest();
         skip(3600 * 6);
-        
+
         // TODO: Uncomment the lines below
         // uint256 profit = want.balanceOf(address(vault));
         // assertGt(want.balanceOf(address(strategy) + profit), _amount);
@@ -210,4 +175,5 @@ contract StrategyTest is StrategyFixture {
         strategy.harvestTrigger(0);
         strategy.tendTrigger(0);
     }
+
 }
