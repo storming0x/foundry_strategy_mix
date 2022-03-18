@@ -25,7 +25,7 @@ Alice can then redeem those shares using `Vault.withdrawAll()` for the correspon
 
 1. To install with [Foundry](https://github.com/gakonst/foundry).
 
-2. Fork this repository and create a new repository using it as template. [Create from template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+2. Fork this repository (easier) or create a new repository using it as template. [Create from template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
 
 3. Clone your newly created repository recursively to include modules.
 
@@ -33,7 +33,10 @@ Alice can then redeem those shares using `Vault.withdrawAll()` for the correspon
 git clone --recursive https://github.com/myuser/foundry-yearn-strategy
 
 cd foundry-yearn-strategy
+
 ```
+
+NOTE: if you create from template you may need to run the following command to fetch the git submodules `git submodule init && git submodule update` 
 
 4. Build the project.
 
