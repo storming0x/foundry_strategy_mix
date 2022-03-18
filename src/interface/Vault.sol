@@ -134,6 +134,8 @@ interface IVault is IERC20 {
 
     function migrateStrategy(address oldVersion, address newVersion) external;
 
+    function setEmergencyShutdown(bool active) external;
+
     function updateStrategyDebtRatio(address strategy, uint256 debtRatio)
         external;
 
