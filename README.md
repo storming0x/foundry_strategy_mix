@@ -36,7 +36,7 @@ cd foundry-yearn-strategy
 
 ```
 
-NOTE: if you create from template you may need to run the following command to fetch the git submodules `git submodule init && git submodule update` 
+NOTE: if you create from template you may need to run the following command to fetch the git submodules (.gitmodules for exact releases) `git submodule init && git submodule update`
 
 4. Build the project.
 
