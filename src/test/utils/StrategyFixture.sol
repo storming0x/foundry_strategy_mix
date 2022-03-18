@@ -6,6 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ExtendedDSTest} from "./ExtendedDSTest.sol";
 import {stdCheats} from "forge-std/stdlib.sol";
+import {Vm} from "forge-std/Vm.sol";
 import {IVault} from "../../interfaces/Vault.sol";
 
 // NOTE: if the name of the strat or file changes this needs to be updated
@@ -18,6 +19,11 @@ string constant vaultArtifact = "artifacts/Vault.json";
 // Base fixture deploying Vault
 contract StrategyFixture is ExtendedDSTest, stdCheats {
     using SafeERC20 for IERC20;
+
+    // we use custom names that are unlikely to cause collisions so this contract
+    // can be inherited easily
+    // TODO: see if theres a better way to use this
+    Vm public constant vm_std_cheats = Vm(address(uint160(uint256(keccak256('hevm cheat code')))));
 
     IVault public vault;
     Strategy public strategy;
