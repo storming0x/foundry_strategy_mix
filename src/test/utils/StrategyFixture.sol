@@ -58,6 +58,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
             strategist
         );
 
+        // add more labels to make your traces readable
+        vm_std_cheats.label(address(vault), "Vault");
+        vm_std_cheats.label(address(strategy), "Strategy");
+        vm_std_cheats.label(address(want), "Want");
+
         // do here additional setup
         vault.setDepositLimit(type(uint256).max);
         tip(address(want), address(user), 10000e18);
