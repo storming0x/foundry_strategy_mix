@@ -19,7 +19,7 @@ contract StrategyShutdownTest is StrategyFixture {
         want.approve(address(vault), _amount);
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
-        assertEq(want.balanceOf(address(vault)), _amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         uint256 bal = want.balanceOf(user);
         if (bal > 0) {
@@ -31,7 +31,7 @@ contract StrategyShutdownTest is StrategyFixture {
         skip(3600 * 7);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // Set Emergency
         vm_std_cheats.prank(gov);
@@ -41,7 +41,7 @@ contract StrategyShutdownTest is StrategyFixture {
         vm_std_cheats.prank(user);
         vault.withdraw();
 
-        assertEq(want.balanceOf(user), _amount);
+        assertRelApproxEq(want.balanceOf(user), _amount, DELTA);
     }
 
     function testBasicShutdown(uint256 _amount) public {
@@ -55,13 +55,13 @@ contract StrategyShutdownTest is StrategyFixture {
         want.approve(address(vault), _amount);
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
-        assertEq(want.balanceOf(address(vault)), _amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         // Harvest 1: Send funds through the strategy
         skip(1 days);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // Earn interest
         skip(1 days);

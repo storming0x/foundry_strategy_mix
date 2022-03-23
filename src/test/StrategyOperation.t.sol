@@ -37,13 +37,13 @@ contract StrategyOperationsTest is StrategyFixture {
         want.approve(address(vault), _amount);
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
-        assertEq(want.balanceOf(address(vault)), _amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         // Note: need to check if this is equivalent to chain.sleep in brownie
         skip(60 * 3); // skip 3 minutes
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
         // tend
         vm_std_cheats.prank(strategist);
         strategy.tend();
@@ -51,7 +51,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.prank(user);
         vault.withdraw();
 
-        assertEq(want.balanceOf(user), balanceBefore);
+        assertRelApproxEq(want.balanceOf(user), balanceBefore, DELTA);
     }
 
     function testEmergencyExit(uint256 _amount) public {
@@ -68,7 +68,7 @@ contract StrategyOperationsTest is StrategyFixture {
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // set emergency and exit
         vm_std_cheats.prank(gov);
@@ -90,13 +90,13 @@ contract StrategyOperationsTest is StrategyFixture {
         want.approve(address(vault), _amount);
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
-        assertEq(want.balanceOf(address(vault)), _amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         // Harvest 1: Send funds through the strategy
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // TODO: Add some code before harvest #2 to simulate earning yield
 
@@ -129,14 +129,14 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.prank(strategist);
         strategy.harvest();
         uint256 half = uint256(_amount / 2);
-        assertEq(strategy.estimatedTotalAssets(), half);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), half, DELTA);
 
         vm_std_cheats.prank(gov);
         vault.updateStrategyDebtRatio(address(strategy), 10_000);
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // In order to pass these tests, you will need to implement prepareReturn.
         // TODO: uncomment the following lines.
@@ -145,7 +145,7 @@ contract StrategyOperationsTest is StrategyFixture {
         // skip(1);
         // vm_std_cheats.prank(strategist);
         // strategy.harvest();
-        // assertEq(strategy.estimatedTotalAssets(), half);
+        // assertRelApproxEq(strategy.estimatedTotalAssets(), half, DELTA);
     }
 
     function testSweep(uint256 _amount) public {
@@ -184,7 +184,11 @@ contract StrategyOperationsTest is StrategyFixture {
         assertEq(weth.balanceOf(user), 0);
         vm_std_cheats.prank(gov);
         strategy.sweep(address(weth));
-        assertEq(weth.balanceOf(gov), wethAmount + beforeBalance);
+        assertRelApproxEq(
+            weth.balanceOf(gov),
+            wethAmount + beforeBalance,
+            DELTA
+        );
     }
 
     function testTriggers(uint256 _amount) public {

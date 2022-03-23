@@ -22,7 +22,7 @@ contract StrategyRevokeTest is StrategyFixture {
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // In order to pass these tests, you will need to implement prepareReturn.
         // TODO: uncomment the following lines.
@@ -31,7 +31,7 @@ contract StrategyRevokeTest is StrategyFixture {
         // skip(1);
         // vm_std_cheats.prank(strategist);
         // strategy.harvest();
-        // assertEq(want.balanceOf(address(vault)), _amount);
+        // assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
     }
 
     function testRevokeStrategyFromStrategy(uint256 _amount) public {
@@ -47,13 +47,13 @@ contract StrategyRevokeTest is StrategyFixture {
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(strategy.estimatedTotalAssets(), _amount);
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         vm_std_cheats.prank(gov);
         strategy.setEmergencyExit();
         skip(1);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
-        assertEq(want.balanceOf(address(vault)), _amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
     }
 }
