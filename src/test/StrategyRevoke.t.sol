@@ -12,6 +12,7 @@ contract StrategyRevokeTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm_std_cheats.prank(user);
@@ -37,6 +38,7 @@ contract StrategyRevokeTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         vm_std_cheats.prank(user);
         want.approve(address(vault), _amount);

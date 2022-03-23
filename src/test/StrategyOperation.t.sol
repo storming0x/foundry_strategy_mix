@@ -30,6 +30,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         uint256 balanceBefore = want.balanceOf(address(user));
         vm_std_cheats.prank(user);
@@ -57,6 +58,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault
         vm_std_cheats.prank(user);
@@ -81,6 +83,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault
         vm_std_cheats.prank(user);
@@ -113,6 +116,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm_std_cheats.prank(user);
@@ -148,11 +152,7 @@ contract StrategyOperationsTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
-
-        vm_std_cheats.prank(user);
-        // solhint-disable-next-line
-        (bool sent, ) = address(weth).call{value: WETH_AMT}("");
-        require(sent, "failed to send ether");
+        tip(address(want), user, _amount);
 
         // Strategy want token doesn't work
         vm_std_cheats.prank(user);
@@ -176,19 +176,22 @@ contract StrategyOperationsTest is StrategyFixture {
         // strategy.sweep(strategy.protectedToken());
 
         uint256 beforeBalance = weth.balanceOf(gov);
+        uint256 wethAmount = 1 ether;
+        tip(address(weth), user, wethAmount);
         vm_std_cheats.prank(user);
-        weth.transfer(address(strategy), WETH_AMT);
+        weth.transfer(address(strategy), wethAmount);
         assertNeq(address(weth), address(strategy.want()));
         assertEq(weth.balanceOf(user), 0);
         vm_std_cheats.prank(gov);
         strategy.sweep(address(weth));
-        assertEq(weth.balanceOf(gov), WETH_AMT + beforeBalance);
+        assertEq(weth.balanceOf(gov), wethAmount + beforeBalance);
     }
 
     function testTriggers(uint256 _amount) public {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm_std_cheats.prank(user);

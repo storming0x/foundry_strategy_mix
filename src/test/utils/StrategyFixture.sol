@@ -43,7 +43,6 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
 
     // Used for integer approximation
     uint256 public constant DELTA = 10**5;
-    uint256 public constant WETH_AMT = 10**18;
 
     function setUp() public virtual {
         _setTokenAddrs();
@@ -68,12 +67,18 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         vm_std_cheats.label(address(vault), "Vault");
         vm_std_cheats.label(address(strategy), "Strategy");
         vm_std_cheats.label(address(want), "Want");
+        vm_std_cheats.label(gov, "Gov");
+        vm_std_cheats.label(user, "User");
+        vm_std_cheats.label(whale, "Whale");
+        vm_std_cheats.label(rewards, "Rewards");
+        vm_std_cheats.label(guardian, "Guardian");
+        vm_std_cheats.label(management, "Management");
+        vm_std_cheats.label(strategist, "Strategist");
+        vm_std_cheats.label(keeper, "Keeper");
 
         // do here additional setup
         vm_std_cheats.prank(gov);
         vault.setDepositLimit(type(uint256).max);
-        tip(address(want), address(user), 100_000_000 ether);
-        vm_std_cheats.deal(user, 10_000 ether);
     }
 
     // Deploys a vault

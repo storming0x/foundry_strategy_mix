@@ -12,6 +12,7 @@ contract StrategyShutdownTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault
         vm_std_cheats.prank(user);
@@ -47,6 +48,7 @@ contract StrategyShutdownTest is StrategyFixture {
         vm_std_cheats.assume(
             _amount > 0.1 ether && _amount < 100_000_000 ether
         );
+        tip(address(want), user, _amount);
 
         // Deposit to the vault
         vm_std_cheats.prank(user);
