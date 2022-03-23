@@ -23,7 +23,8 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     // we use custom names that are unlikely to cause collisions so this contract
     // can be inherited easily
     // TODO: see if theres a better way to use this
-    // Vm public constant vm_std_cheats = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+    Vm public constant vm_std_cheats =
+        Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     IVault public vault;
     Strategy public strategy;
