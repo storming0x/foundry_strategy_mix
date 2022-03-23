@@ -99,6 +99,8 @@ interface IVault is IERC20 {
      */
     function debtOutstanding() external view returns (uint256);
 
+    function debtOutstanding(address _strategy) external view returns (uint256);
+
     /**
      * View how much the Vault expect this Strategy to return at the current
      * block, based on its present performance (since its last report). Can be
@@ -136,8 +138,16 @@ interface IVault is IERC20 {
 
     function setEmergencyShutdown(bool active) external;
 
+    function setManagementFee(uint256 fee) external;
+
     function updateStrategyDebtRatio(address strategy, uint256 debtRatio)
         external;
+
+    function withdraw(
+        uint256 maxShare,
+        address recipient,
+        uint256 maxLoss
+    ) external;
 
     /**
      * View the governance address of the Vault to assert privileged functions

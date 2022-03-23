@@ -9,7 +9,9 @@ contract StrategyRevokeTest is StrategyFixture {
     }
 
     function testRevokeStrategyFromVault(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
+        vm_std_cheats.assume(
+            _amount > 0.1 ether && _amount < 100_000_000 ether
+        );
 
         // Deposit to the vault and harvest
         vm_std_cheats.prank(user);
@@ -17,30 +19,38 @@ contract StrategyRevokeTest is StrategyFixture {
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
         skip(1);
+        vm_std_cheats.prank(strategist);
         strategy.harvest();
         assertEq(strategy.estimatedTotalAssets(), _amount);
 
         // In order to pass these tests, you will need to implement prepareReturn.
         // TODO: uncomment the following lines.
+        // vm_std_cheats.prank(gov);
         // vault.revokeStrategy(address(strategy));
         // skip(1);
+        // vm_std_cheats.prank(strategist);
         // strategy.harvest();
         // assertEq(want.balanceOf(address(vault)), _amount);
     }
 
     function testRevokeStrategyFromStrategy(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > 0.1 ether && _amount < 10e18);
+        vm_std_cheats.assume(
+            _amount > 0.1 ether && _amount < 100_000_000 ether
+        );
 
         vm_std_cheats.prank(user);
         want.approve(address(vault), _amount);
         vm_std_cheats.prank(user);
         vault.deposit(_amount);
         skip(1);
+        vm_std_cheats.prank(strategist);
         strategy.harvest();
         assertEq(strategy.estimatedTotalAssets(), _amount);
 
+        vm_std_cheats.prank(gov);
         strategy.setEmergencyExit();
         skip(1);
+        vm_std_cheats.prank(strategist);
         strategy.harvest();
         assertEq(want.balanceOf(address(vault)), _amount);
     }

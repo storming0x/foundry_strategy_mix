@@ -23,38 +23,44 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
     // we use custom names that are unlikely to cause collisions so this contract
     // can be inherited easily
     // TODO: see if theres a better way to use this
-    Vm public constant vm_std_cheats = Vm(address(uint160(uint256(keccak256('hevm cheat code')))));
+    // Vm public constant vm_std_cheats = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     IVault public vault;
     Strategy public strategy;
     IERC20 public weth;
     IERC20 public want;
 
-    // NOTE: feel free change these vars to adjust for your strategy testing
-    IERC20 public constant DAI =
-        IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-    IERC20 public constant WETH =
-        IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
-    address public whale = 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643;
-    address public user = address(1337);
-    address public strategist = address(1);
+    mapping(string => address) tokenAddrs;
+
+    address public gov = 0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52;
+    address public user = address(1);
+    address public whale = address(2);
+    address public rewards = address(3);
+    address public guardian = address(4);
+    address public management = address(5);
+    address public strategist = address(6);
+    address public keeper = address(7);
+
+    // Used for integer approximation
+    uint256 public constant DELTA = 10**5;
     uint256 public constant WETH_AMT = 10**18;
 
     function setUp() public virtual {
-        weth = WETH;
+        _setTokenAddrs();
 
-        // replace with your token
-        want = DAI;
+        // Choose a token from the tokenAddrs mapping, see _setTokenAddrs for options
+        weth = IERC20(tokenAddrs["WETH"]);
+        want = IERC20(tokenAddrs["DAI"]);
 
         deployVaultAndStrategy(
             address(want),
-            address(this),
-            address(this),
+            gov,
+            rewards,
             "",
             "",
-            address(this),
-            address(this),
-            address(this),
+            guardian,
+            management,
+            keeper,
             strategist
         );
 
@@ -64,8 +70,9 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         vm_std_cheats.label(address(want), "Want");
 
         // do here additional setup
+        vm_std_cheats.prank(gov);
         vault.setDepositLimit(type(uint256).max);
-        tip(address(want), address(user), 10000e18);
+        tip(address(want), address(user), 100_000_000 ether);
         vm_std_cheats.deal(user, 10_000 ether);
     }
 
@@ -79,9 +86,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         address _guardian,
         address _management
     ) public returns (address) {
+        vm_std_cheats.prank(gov);
         address _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
 
+        vm_std_cheats.prank(gov);
         vault.initialize(
             _token,
             _gov,
@@ -114,9 +123,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         address _keeper,
         address _strategist
     ) public returns (address _vault, address _strategy) {
+        vm_std_cheats.prank(gov);
         _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
 
+        vm_std_cheats.prank(gov);
         vault.initialize(
             _token,
             _gov,
@@ -134,6 +145,17 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         vm_std_cheats.prank(_strategist);
         strategy.setKeeper(_keeper);
 
+        vm_std_cheats.prank(gov);
         vault.addStrategy(_strategy, 10_000, 0, type(uint256).max, 1_000);
+    }
+
+    function _setTokenAddrs() internal {
+        tokenAddrs["WBTC"] = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
+        tokenAddrs["YFI"] = 0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e;
+        tokenAddrs["WETH"] = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+        tokenAddrs["LINK"] = 0x514910771AF9Ca656af840dff83E8264EcF986CA;
+        tokenAddrs["USDT"] = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+        tokenAddrs["DAI"] = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+        tokenAddrs["USDC"] = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     }
 }
