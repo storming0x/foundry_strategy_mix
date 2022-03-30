@@ -92,6 +92,8 @@ contract StrategyOperationsTest is StrategyFixture {
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
+        uint256 beforePps = vault.pricePerShare();
+
         // Harvest 1: Send funds through the strategy
         skip(1);
         vm_std_cheats.prank(strategist);
@@ -108,7 +110,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
         // TODO: Uncomment the lines below
         // uint256 profit = want.balanceOf(address(vault));
-        // assertGt(want.balanceOf(address(strategy) + profit), _amount);
+        // assertGt(want.balanceOf(address(strategy)) + profit, _amount);
         // assertGt(vault.pricePerShare(), beforePps)
     }
 
