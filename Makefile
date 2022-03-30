@@ -6,8 +6,9 @@
 update:; forge update
 
 # Build & test
+# change ETH_RPC_URL to another one (e.g., FTM_RPC_URL) for different chains
 build  :; forge build
-test   :; forge test --fork-url ${ETH_RPC_URL}
+test   :; forge test -vv --fork-url ${ETH_RPC_URL} 
 trace   :; forge test -vvv --fork-url ${ETH_RPC_URL}
 # local tests without fork
 test-local  :; forge test
