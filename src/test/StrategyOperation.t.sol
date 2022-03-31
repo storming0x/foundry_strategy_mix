@@ -27,9 +27,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     /// Test Operations
     function testStrategyOperation(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         uint256 balanceBefore = want.balanceOf(address(user));
@@ -55,9 +53,7 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testEmergencyExit(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault
@@ -80,9 +76,7 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testProfitableHarvest(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault
@@ -115,9 +109,7 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testChangeDebt(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
@@ -151,9 +143,7 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testSweep(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Strategy want token doesn't work
@@ -194,9 +184,7 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testTriggers(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest

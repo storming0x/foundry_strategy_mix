@@ -9,9 +9,7 @@ contract StrategyRevokeTest is StrategyFixture {
     }
 
     function testRevokeStrategyFromVault(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
@@ -35,9 +33,7 @@ contract StrategyRevokeTest is StrategyFixture {
     }
 
     function testRevokeStrategyFromStrategy(uint256 _amount) public {
-        vm_std_cheats.assume(
-            _amount > 0.1 ether && _amount < 100_000_000 ether
-        );
+        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         vm_std_cheats.prank(user);
