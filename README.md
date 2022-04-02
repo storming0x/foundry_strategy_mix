@@ -98,6 +98,8 @@ to run tests with traces (using console.sol):
 make trace
 ```
 
+See here for some tips on testing [`Testing Tips`](docs/testing_tips_coming_from_brownie.md)
+
 # Resources
 
 - Yearn [Discord channel](https://discord.com/invite/6PNv2nF/)
