@@ -26,7 +26,7 @@ contract StrategyShutdownTest is StrategyFixture {
         }
 
         // Harvest 1: Send funds through the strategy
-        skip(3600 * 7);
+        skip(7 hours);
         vm_std_cheats.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
