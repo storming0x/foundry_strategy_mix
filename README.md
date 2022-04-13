@@ -33,7 +33,6 @@ Alice can then redeem those shares using `Vault.withdrawAll()` for the correspon
 git clone --recursive https://github.com/myuser/foundry-yearn-strategy
 
 cd foundry-yearn-strategy
-
 ```
 
 NOTE: if you create from template you may need to run the following command to fetch the git submodules (.gitmodules for exact releases) `git submodule init && git submodule update`
@@ -53,16 +52,8 @@ NOTE: you can use other services.
      NOTE: If you set up a global environment variable, that will take precedence
 
 7. Run tests
-
-NOTE: tests run in fork environment, you need to setup step 6 to be able to run these commands.
-
 ```sh
 make test
-```
-Run tests with traces (very useful)
-
-```sh
-make trace
 ```
 
 ## Basic Use
@@ -86,19 +77,28 @@ TODO
 
 ## Testing
 
-To run the tests:
+Tests run in fork environment, you need to complete [Installation and Setup](#installation-and-setup) step 6 to be able to run these commands.
 
-```
+```sh
 make test
 ```
+Run tests with traces (very useful)
 
-to run tests with traces (using console.sol):
-
-```
+```sh
 make trace
 ```
+Run specific test contract (e.g. `test/StrategyOperation.t.sol`)
 
-See here for some tips on testing [`Testing Tips`](docs/testing_tips_coming_from_brownie.md)
+```sh
+make test-contract contract=StrategyOperationsTest
+```
+Run specific test contract with traces (e.g. `test/StrategyOperation.t.sol`)
+
+```sh
+make trace-contract contract=StrategyOperationsTest
+```
+
+See here for some tips on testing [`Testing Tips`](https://book.getfoundry.sh/forge/tests.html)
 
 # Resources
 
@@ -106,6 +106,6 @@ See here for some tips on testing [`Testing Tips`](docs/testing_tips_coming_from
 - [Getting help on Foundry](https://github.com/gakonst/foundry#getting-help)
 - [Forge Standard Lib](https://github.com/brockelmore/forge-std)
 - [Awesome Foundry](https://github.com/crisgarner/awesome-foundry)
-- [Foundry Book](https://onbjerg.github.io/foundry-book/index.html)
+- [Foundry Book](https://book.getfoundry.sh/)
 - [Learn Foundry Tutorial](https://www.youtube.com/watch?v=Rp_V7bYiTCM)
 
