@@ -9,46 +9,46 @@ contract StrategyRevokeTest is StrategyFixture {
     }
 
     function testRevokeStrategyFromVault(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
         // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // In order to pass these tests, you will need to implement prepareReturn.
         // TODO: uncomment the following lines.
-        // vm_std_cheats.prank(gov);
+        // vm.prank(gov);
         // vault.revokeStrategy(address(strategy));
         // skip(1);
-        // vm_std_cheats.prank(strategist);
+        // vm.prank(strategist);
         // strategy.harvest();
         // assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
     }
 
     function testRevokeStrategyFromStrategy(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
         tip(address(want), user, _amount);
 
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         strategy.setEmergencyExit();
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
     }

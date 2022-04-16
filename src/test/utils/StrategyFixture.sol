@@ -5,7 +5,7 @@ pragma abicoder v2;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ExtendedDSTest} from "./ExtendedDSTest.sol";
-import {stdCheats} from "forge-std/stdlib.sol";
+import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {IVault} from "../../interfaces/Vault.sol";
 
@@ -17,14 +17,8 @@ import {Strategy} from "../../Strategy.sol";
 string constant vaultArtifact = "artifacts/Vault.json";
 
 // Base fixture deploying Vault
-contract StrategyFixture is ExtendedDSTest, stdCheats {
+contract StrategyFixture is ExtendedDSTest, Test {
     using SafeERC20 for IERC20;
-
-    // we use custom names that are unlikely to cause collisions so this contract
-    // can be inherited easily
-    // TODO: see if theres a better way to use this
-    Vm public constant vm_std_cheats =
-        Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     IVault public vault;
     Strategy public strategy;
@@ -85,20 +79,20 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
             10**vault.decimals();
 
         // add more labels to make your traces readable
-        vm_std_cheats.label(address(vault), "Vault");
-        vm_std_cheats.label(address(strategy), "Strategy");
-        vm_std_cheats.label(address(want), "Want");
-        vm_std_cheats.label(gov, "Gov");
-        vm_std_cheats.label(user, "User");
-        vm_std_cheats.label(whale, "Whale");
-        vm_std_cheats.label(rewards, "Rewards");
-        vm_std_cheats.label(guardian, "Guardian");
-        vm_std_cheats.label(management, "Management");
-        vm_std_cheats.label(strategist, "Strategist");
-        vm_std_cheats.label(keeper, "Keeper");
+        vm.label(address(vault), "Vault");
+        vm.label(address(strategy), "Strategy");
+        vm.label(address(want), "Want");
+        vm.label(gov, "Gov");
+        vm.label(user, "User");
+        vm.label(whale, "Whale");
+        vm.label(rewards, "Rewards");
+        vm.label(guardian, "Guardian");
+        vm.label(management, "Management");
+        vm.label(strategist, "Strategist");
+        vm.label(keeper, "Keeper");
 
         // do here additional setup
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.setDepositLimit(type(uint256).max);
     }
 
@@ -112,11 +106,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         address _guardian,
         address _management
     ) public returns (address) {
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         address _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
 
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.initialize(
             _token,
             _gov,
@@ -149,11 +143,11 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
         address _keeper,
         address _strategist
     ) public returns (address _vault, address _strategy) {
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         _vault = deployCode(vaultArtifact);
         vault = IVault(_vault);
 
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.initialize(
             _token,
             _gov,
@@ -164,14 +158,14 @@ contract StrategyFixture is ExtendedDSTest, stdCheats {
             _management
         );
 
-        vm_std_cheats.prank(_strategist);
+        vm.prank(_strategist);
         _strategy = deployStrategy(_vault);
         strategy = Strategy(_strategy);
 
-        vm_std_cheats.prank(_strategist);
+        vm.prank(_strategist);
         strategy.setKeeper(_keeper);
 
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.addStrategy(_strategy, 10_000, 0, type(uint256).max, 1_000);
     }
 
