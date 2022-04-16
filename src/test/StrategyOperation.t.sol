@@ -28,7 +28,7 @@ contract StrategyOperationsTest is StrategyFixture {
     /// Test Operations
     function testStrategyOperation(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         uint256 balanceBefore = want.balanceOf(address(user));
         vm.prank(user);
@@ -54,7 +54,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     function testEmergencyExit(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
         vm.prank(user);
@@ -77,7 +77,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     function testProfitableHarvest(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
         vm.prank(user);
@@ -110,7 +110,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     function testChangeDebt(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm.prank(user);
@@ -144,7 +144,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     function testSweep(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Strategy want token doesn't work
         vm.prank(user);
@@ -169,7 +169,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
         uint256 beforeBalance = weth.balanceOf(gov);
         uint256 wethAmount = 1 ether;
-        tip(address(weth), user, wethAmount);
+        deal(address(weth), user, wethAmount);
         vm.prank(user);
         weth.transfer(address(strategy), wethAmount);
         assertNeq(address(weth), address(strategy.want()));
@@ -185,7 +185,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
     function testTriggers(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm.prank(user);

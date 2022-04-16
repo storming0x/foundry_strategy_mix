@@ -10,7 +10,7 @@ contract StrategyShutdownTest is StrategyFixture {
 
     function testVaultShutdownCanWithdraw(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
         vm.prank(user);
@@ -44,7 +44,7 @@ contract StrategyShutdownTest is StrategyFixture {
 
     function testBasicShutdown(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
         vm.prank(user);

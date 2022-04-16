@@ -10,7 +10,7 @@ contract StrategyRevokeTest is StrategyFixture {
 
     function testRevokeStrategyFromVault(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm.prank(user);
@@ -34,7 +34,7 @@ contract StrategyRevokeTest is StrategyFixture {
 
     function testRevokeStrategyFromStrategy(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         vm.prank(user);
         want.approve(address(vault), _amount);

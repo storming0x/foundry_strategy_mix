@@ -16,7 +16,7 @@ contract StrategyMigrationTest is StrategyFixture {
     // Show that nothing is lost.
     function testMigration(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
         vm.prank(user);
