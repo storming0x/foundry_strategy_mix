@@ -8,8 +8,8 @@ update:; forge update
 # Build & test
 # change ETH_RPC_URL to another one (e.g., FTM_RPC_URL) for different chains
 build  :; forge build
-test   :; ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY} forge test -vv --fork-url ${ETH_RPC_URL}
-trace   :; ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY} forge test -vvv --fork-url ${ETH_RPC_URL}
+test   :; forge test -vv --fork-url ${ETH_RPC_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
+trace   :; forge test -vvv --fork-url ${ETH_RPC_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
 # local tests without fork
 test-local  :; forge test
 trace-local  :; forge test -vvv
