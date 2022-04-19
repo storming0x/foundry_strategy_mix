@@ -27,62 +27,62 @@ contract StrategyOperationsTest is StrategyFixture {
 
     /// Test Operations
     function testStrategyOperation(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         uint256 balanceBefore = want.balanceOf(address(user));
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         // Note: need to check if this is equivalent to chain.sleep in brownie
         skip(60 * 3); // skip 3 minutes
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
         // tend
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.tend();
 
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.withdraw();
 
         assertRelApproxEq(want.balanceOf(user), balanceBefore, DELTA);
     }
 
     function testEmergencyExit(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // set emergency and exit
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         strategy.setEmergencyExit();
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertLt(strategy.estimatedTotalAssets(), _amount);
     }
 
     function testProfitableHarvest(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
@@ -90,7 +90,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
         // Harvest 1: Send funds through the strategy
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
@@ -98,7 +98,7 @@ contract StrategyOperationsTest is StrategyFixture {
 
         // Harvest 2: Realize profit
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         skip(3600 * 6);
 
@@ -109,72 +109,72 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testChangeDebt(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.updateStrategyDebtRatio(address(strategy), 5_000);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         uint256 half = uint256(_amount / 2);
         assertRelApproxEq(strategy.estimatedTotalAssets(), half, DELTA);
 
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.updateStrategyDebtRatio(address(strategy), 10_000);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // In order to pass these tests, you will need to implement prepareReturn.
         // TODO: uncomment the following lines.
-        // vm_std_cheats.prank(gov);
+        // vm.prank(gov);
         // vault.updateStrategyDebtRatio(address(strategy), 5_000);
         // skip(1);
-        // vm_std_cheats.prank(strategist);
+        // vm.prank(strategist);
         // strategy.harvest();
         // assertRelApproxEq(strategy.estimatedTotalAssets(), half, DELTA);
     }
 
     function testSweep(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Strategy want token doesn't work
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.transfer(address(strategy), _amount);
         assertEq(address(want), address(strategy.want()));
         assertGt(want.balanceOf(address(strategy)), 0);
 
-        vm_std_cheats.prank(gov);
-        vm_std_cheats.expectRevert("!want");
+        vm.prank(gov);
+        vm.expectRevert("!want");
         strategy.sweep(address(want));
 
         // Vault share token doesn't work
-        vm_std_cheats.prank(gov);
-        vm_std_cheats.expectRevert("!shares");
+        vm.prank(gov);
+        vm.expectRevert("!shares");
         strategy.sweep(address(vault));
 
         // TODO: If you add protected tokens to the strategy.
         // Protected token doesn't work
-        // vm_std_cheats.prank(gov);
-        // vm_std_cheats.expectRevert("!protected");
+        // vm.prank(gov);
+        // vm.expectRevert("!protected");
         // strategy.sweep(strategy.protectedToken());
 
         uint256 beforeBalance = weth.balanceOf(gov);
         uint256 wethAmount = 1 ether;
-        tip(address(weth), user, wethAmount);
-        vm_std_cheats.prank(user);
+        deal(address(weth), user, wethAmount);
+        vm.prank(user);
         weth.transfer(address(strategy), wethAmount);
         assertNeq(address(weth), address(strategy.want()));
         assertEq(weth.balanceOf(user), 0);
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         strategy.sweep(address(weth));
         assertRelApproxEq(
             weth.balanceOf(gov),
@@ -184,18 +184,18 @@ contract StrategyOperationsTest is StrategyFixture {
     }
 
     function testTriggers(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.updateStrategyDebtRatio(address(strategy), 5_000);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
 
         strategy.harvestTrigger(0);

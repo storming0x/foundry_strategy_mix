@@ -15,23 +15,23 @@ contract StrategyMigrationTest is StrategyFixture {
     // Use another copy of the strategy to simmulate the migration
     // Show that nothing is lost.
     function testMigration(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault and harvest
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         skip(1);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // Migrate to a new strategy
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         Strategy newStrategy = Strategy(deployStrategy(address(vault)));
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.migrateStrategy(address(strategy), address(newStrategy));
         assertRelApproxEq(newStrategy.estimatedTotalAssets(), _amount, DELTA);
     }

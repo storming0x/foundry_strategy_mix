@@ -9,53 +9,53 @@ contract StrategyShutdownTest is StrategyFixture {
     }
 
     function testVaultShutdownCanWithdraw(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         uint256 bal = want.balanceOf(user);
         if (bal > 0) {
-            vm_std_cheats.prank(user);
+            vm.prank(user);
             want.transfer(address(0), bal);
         }
 
         // Harvest 1: Send funds through the strategy
         skip(3600 * 7);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
         // Set Emergency
-        vm_std_cheats.prank(gov);
+        vm.prank(gov);
         vault.setEmergencyShutdown(true);
 
         // Withdraw (does it work, do you get what you expect)
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.withdraw();
 
         assertRelApproxEq(want.balanceOf(user), _amount, DELTA);
     }
 
     function testBasicShutdown(uint256 _amount) public {
-        vm_std_cheats.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
-        tip(address(want), user, _amount);
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
 
         // Deposit to the vault
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         want.approve(address(vault), _amount);
-        vm_std_cheats.prank(user);
+        vm.prank(user);
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
         // Harvest 1: Send funds through the strategy
         skip(1 days);
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
 
@@ -63,15 +63,15 @@ contract StrategyShutdownTest is StrategyFixture {
         skip(1 days);
 
         // Harvest 2: Realize profit
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest();
         skip(6 hours);
 
         // Set emergency
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.setEmergencyExit();
 
-        vm_std_cheats.prank(strategist);
+        vm.prank(strategist);
         strategy.harvest(); // Remove funds from strategy
 
         assertEq(want.balanceOf(address(strategy)), 0);
