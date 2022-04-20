@@ -9,10 +9,10 @@ update:; forge update
 # change ETH_RPC_URL to another one (e.g., FTM_RPC_URL) for different chains
 FORK_URL := ${ETH_RPC_URL} 
 build  :; forge build
-test   :; forge test -vv --fork-url ${FORK_URL}
-trace   :; forge test -vvv --fork-url ${FORK_URL}
-test-contract :; forge test -vv --fork-url ${FORK_URL} --match-contract $(contract)
-trace-contract :; forge test -vvv --fork-url ${FORK_URL} --match-contract $(contract)
+test   :; forge test -vv --fork-url ${FORK_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
+trace   :; forge test -vvv --fork-url ${FORK_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
+test-contract :; forge test -vv --fork-url ${FORK_URL} --match-contract $(contract) --etherscan-api-key ${ETHERSCAN_API_KEY}
+trace-contract :; forge test -vvv --fork-url ${FORK_URL} --match-contract $(contract) --etherscan-api-key ${ETHERSCAN_API_KEY}
 # local tests without fork
 test-local  :; forge test
 trace-local  :; forge test -vvv

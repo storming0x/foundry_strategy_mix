@@ -48,8 +48,8 @@ NOTE: you can use other services.
 
 6. Use .env file
   1. Make a copy of `.env.example`
-  2. Add the values for `ETH_RPC_URL` and other example vars
-     NOTE: If you set up a global environment variable, that will take precedence
+  2. Add the values for `ETH_RPC_URL`, `ETHERSCAN_API_KEY` and other example vars
+     NOTE: If you set up a global environment variable, that will take precedence.
 
 7. Run tests
 ```sh
