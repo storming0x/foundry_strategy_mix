@@ -37,11 +37,11 @@ contract StrategyOperationsTest is StrategyFixture {
         vault.deposit(_amount);
         assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
 
-        // Note: need to check if this is equivalent to chain.sleep in brownie
-        skip(60 * 3); // skip 3 minutes
+        skip(3 minutes);
         vm.prank(strategist);
         strategy.harvest();
         assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
+
         // tend
         vm.prank(strategist);
         strategy.tend();
@@ -100,7 +100,7 @@ contract StrategyOperationsTest is StrategyFixture {
         skip(1);
         vm.prank(strategist);
         strategy.harvest();
-        skip(3600 * 6);
+        skip(6 hours);
 
         // TODO: Uncomment the lines below
         // uint256 profit = want.balanceOf(address(vault));

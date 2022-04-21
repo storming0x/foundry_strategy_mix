@@ -58,7 +58,7 @@ contract StrategyFixture is ExtendedDSTest, Test {
         weth = IERC20(tokenAddrs["WETH"]);
         want = IERC20(tokenAddrs[token]);
 
-        deployVaultAndStrategy(
+        (address _vault, address _strategy) = deployVaultAndStrategy(
             address(want),
             gov,
             rewards,
@@ -69,6 +69,8 @@ contract StrategyFixture is ExtendedDSTest, Test {
             keeper,
             strategist
         );
+        vault = IVault(_vault);
+        strategy = Strategy(_strategy);
 
         minFuzzAmt = 10**vault.decimals() / 10;
         maxFuzzAmt =
@@ -92,8 +94,6 @@ contract StrategyFixture is ExtendedDSTest, Test {
         vm.label(keeper, "Keeper");
 
         // do here additional setup
-        vm.prank(gov);
-        vault.setDepositLimit(type(uint256).max);
     }
 
     // Deploys a vault
@@ -106,12 +106,12 @@ contract StrategyFixture is ExtendedDSTest, Test {
         address _guardian,
         address _management
     ) public returns (address) {
-        vm.prank(gov);
-        address _vault = deployCode(vaultArtifact);
-        vault = IVault(_vault);
+        vm.prank(_gov);
+        address _vaultAddress = deployCode(vaultArtifact);
+        IVault _vault = IVault(_vaultAddress);
 
-        vm.prank(gov);
-        vault.initialize(
+        vm.prank(_gov);
+        _vault.initialize(
             _token,
             _gov,
             _rewards,
@@ -121,7 +121,10 @@ contract StrategyFixture is ExtendedDSTest, Test {
             _management
         );
 
-        return address(vault);
+        vm.prank(_gov);
+        _vault.setDepositLimit(type(uint256).max);
+
+        return address(_vault);
     }
 
     // Deploys a strategy
@@ -142,13 +145,8 @@ contract StrategyFixture is ExtendedDSTest, Test {
         address _management,
         address _keeper,
         address _strategist
-    ) public returns (address _vault, address _strategy) {
-        vm.prank(gov);
-        _vault = deployCode(vaultArtifact);
-        vault = IVault(_vault);
-
-        vm.prank(gov);
-        vault.initialize(
+    ) public returns (address _vaultAddr, address _strategyAddr) {
+        _vaultAddr = deployVault(
             _token,
             _gov,
             _rewards,
@@ -157,16 +155,19 @@ contract StrategyFixture is ExtendedDSTest, Test {
             _guardian,
             _management
         );
+        IVault _vault = IVault(_vaultAddr);
 
         vm.prank(_strategist);
-        _strategy = deployStrategy(_vault);
-        strategy = Strategy(_strategy);
+        _strategyAddr = deployStrategy(_vaultAddr);
+        Strategy _strategy = Strategy(_strategyAddr);
 
         vm.prank(_strategist);
-        strategy.setKeeper(_keeper);
+        _strategy.setKeeper(_keeper);
 
-        vm.prank(gov);
-        vault.addStrategy(_strategy, 10_000, 0, type(uint256).max, 1_000);
+        vm.prank(_gov);
+        _vault.addStrategy(_strategyAddr, 10_000, 0, type(uint256).max, 1_000);
+
+        return (address(_vault), address(_strategy));
     }
 
     function _setTokenAddrs() internal {
