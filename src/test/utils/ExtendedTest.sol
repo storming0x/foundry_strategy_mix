@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.12;
 
-import "ds-test/test.sol";
+import {Test} from "forge-std/Test.sol";
 
-contract ExtendedDSTest is DSTest {
+contract ExtendedTest is Test {
     // solhint-disable-next-line
     function assertNeq(address a, address b) internal {
         if (a == b) {
