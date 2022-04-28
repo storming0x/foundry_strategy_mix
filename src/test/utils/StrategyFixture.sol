@@ -4,8 +4,7 @@ pragma abicoder v2;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ExtendedDSTest} from "./ExtendedDSTest.sol";
-import {Test} from "forge-std/Test.sol";
+import {ExtendedTest} from "./ExtendedTest.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {IVault} from "../../interfaces/Vault.sol";
 
@@ -17,7 +16,7 @@ import {Strategy} from "../../Strategy.sol";
 string constant vaultArtifact = "artifacts/Vault.json";
 
 // Base fixture deploying Vault
-contract StrategyFixture is ExtendedDSTest, Test {
+contract StrategyFixture is ExtendedTest {
     using SafeERC20 for IERC20;
 
     IVault public vault;
