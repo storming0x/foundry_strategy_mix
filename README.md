@@ -100,6 +100,17 @@ make trace-contract contract=StrategyOperationsTest
 
 See here for some tips on testing [`Testing Tips`](https://book.getfoundry.sh/forge/tests.html)
 
+## Deploying Contracts
+
+You can Deploy and verify your strategies if PRIV_KEY and ETHERSCAN_API_KEY are both set in the .env by using the command
+
+'''sh
+make deploy
+'''
+
+Before deploying update the constructor-args variable to include any parameters needed. Make sure to seperate each argument only by a space, no commas.
+
+The deploy script is coded to deploy the "Strategy" contract within the Strategy.sol file. This can be updated by simply updating to src/YourContract.sol:YourContract.
 # Resources
 
 - Yearn [Discord channel](https://discord.com/invite/6PNv2nF/)
