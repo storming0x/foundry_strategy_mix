@@ -11,7 +11,7 @@ FORK_URL := ${ETH_RPC_URL}
 
 # For deployments. Add all args without a comma
 # ex: 0x316..FB5 "Name" 10
-constructor-args := 0x31676A29E0B17529f9503C6E5673A8dA56ec2FB5
+constructor-args := 
 
 build  :; forge build
 test   :; forge test -vv --fork-url ${FORK_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
