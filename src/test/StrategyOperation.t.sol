@@ -3,6 +3,7 @@ pragma solidity ^0.8.12;
 import "forge-std/console.sol";
 
 import {StrategyFixture} from "./utils/StrategyFixture.sol";
+import {StrategyParams} from "../interfaces/Vault.sol";
 
 contract StrategyOperationsTest is StrategyFixture {
     // setup is run on before each test
@@ -142,8 +143,48 @@ contract StrategyOperationsTest is StrategyFixture {
         // assertRelApproxEq(strategy.estimatedTotalAssets(), half, DELTA);
     }
 
-    function testSweep(uint256 _amount) public {
+    function testProfitableHarvestOnDebtChange(uint256 _amount) public {
         vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);
+        deal(address(want), user, _amount);
+
+        // Deposit to the vault
+        vm.prank(user);
+        want.approve(address(vault), _amount);
+        vm.prank(user);
+        vault.deposit(_amount);
+        assertRelApproxEq(want.balanceOf(address(vault)), _amount, DELTA);
+
+        uint256 beforePps = vault.pricePerShare();
+
+        // Harvest 1: Send funds through the strategy
+        skip(1);
+        vm.prank(strategist);
+        strategy.harvest();
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount, DELTA);
+
+        // TODO: Add some code before harvest #2 to simulate earning yield
+
+        vm.prank(gov);
+        vault.updateStrategyDebtRatio(address(strategy), 5_000);
+
+        // Harvest 2: Realize profit
+        skip(1);
+        vm.prank(strategist);
+        strategy.harvest();
+        //Make sure we have updated the debt ratio of the strategy
+        assertRelApproxEq(strategy.estimatedTotalAssets(), _amount / 2, DELTA);
+        skip(6 hours);
+
+        // Make sure we have updated the debt and made a profit
+        uint256 vaultBalance = want.balanceOf(address(vault));
+        StrategyParams memory params = vault.strategies(address(strategy));
+        //Make sure we got back profit + half the deposit
+        assertRelApproxEq(_amount / 2 + params.totalGain, vaultBalance, DELTA);
+        assertGt(vault.pricePerShare(), beforePps);
+    }
+
+    function testSweep(uint256 _amount) public {
+        vm.assume(_amount > minFuzzAmt && _amount < maxFuzzAmt);    
         deal(address(want), user, _amount);
 
         // Strategy want token doesn't work
