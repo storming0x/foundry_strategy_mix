@@ -8,7 +8,6 @@
 
 - Sample test suite. ([`tests`](src/test/))
 
-
 ## How does it work for the User
 
 Let's say Alice holds 100 DAI and wants to start earning yield % on them.
@@ -111,6 +110,14 @@ make deploy
 Before deploying, update the constructor-args variable within the Makefile to include any parameters applicable. Make sure to seperate each argument only by a space, no commas.
 
 The deploy script is coded to deploy the "Strategy" contract within the Strategy.sol file. This can be updated by simply updating to src/YourContract.sol:YourContract.
+
+## GitHub Actions
+
+This template comes with GitHub Actions pre-configured. Your contracts will be linted and tested on every push to
+`master` and `develop` branch.
+
+Note though that to make this work, you must se your `INFURA_API_KEY` and your `ETHERSCAN_API_KEY` as GitHub secrets.
+
 # Resources
 
 - Yearn [Discord channel](https://discord.com/invite/6PNv2nF/)
@@ -119,4 +126,3 @@ The deploy script is coded to deploy the "Strategy" contract within the Strategy
 - [Awesome Foundry](https://github.com/crisgarner/awesome-foundry)
 - [Foundry Book](https://book.getfoundry.sh/)
 - [Learn Foundry Tutorial](https://www.youtube.com/watch?v=Rp_V7bYiTCM)
-

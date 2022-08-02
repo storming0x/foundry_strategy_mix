@@ -23,6 +23,6 @@ jobs:
 
       - name: Run tests
         env:
-          ETH_RPC_URL: https://mainnet.infura.io/v3/b7821200399e4be2b4e5dbdf06fbe85b
-          ETHERSCAN_API_KEY: 6776WKCX4XHV7C6NQBTIME6XKM2YNBK29V
+          ETH_RPC_URL: https://mainnet.infura.io/v3/${{ secrets.INFURA_API_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: make trace
