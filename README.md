@@ -116,7 +116,7 @@ The deploy script is coded to deploy the "Strategy" contract within the Strategy
 This template comes with GitHub Actions pre-configured. Your contracts will be linted and tested on every push to
 `master` and `develop` branch.
 
-Note though that to make this work, you must se your `INFURA_API_KEY` and your `ETHERSCAN_API_KEY` as GitHub secrets.
+Note though that to make this work, you must set your `INFURA_API_KEY` and your `ETHERSCAN_API_KEY` as GitHub secrets.
 
 # Resources
 
