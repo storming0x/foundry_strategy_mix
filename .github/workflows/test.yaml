@@ -22,7 +22,4 @@ jobs:
           version: nightly
 
       - name: Run tests
-        env:
-          ETH_RPC_URL: https://mainnet.infura.io/v3/b7821200399e4be2b4e5dbdf06fbe85b
-          ETHERSCAN_API_KEY: 6776WKCX4XHV7C6NQBTIME6XKM2YNBK29V
-        run: make trace
+        run: forge test -vvv --fork-url ${{ secrets.ETH_RPC_URL }} --etherscan-api-key  ${{ secrets.ETHERSCAN_API_KEY }}
