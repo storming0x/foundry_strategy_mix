@@ -8,4 +8,4 @@
 [submodule "lib/yearn-vaults"]
 	path = lib/yearn-vaults
 	url = https://github.com/yearn/yearn-vaults
-	branch = feat/0.4.3-sol8
+	branch = v0.4.5
