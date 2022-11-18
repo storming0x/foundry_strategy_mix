@@ -5,7 +5,3 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "lib/yearn-vaults"]
-	path = lib/yearn-vaults
-	url = https://github.com/yearn/yearn-vaults
-	branch = feat/0.4.3-sol8
