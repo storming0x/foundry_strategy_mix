@@ -63,7 +63,7 @@ TODO
 
 ## Implementing Strategy Logic
 
-[`contracts/Strategy.sol`](contracts/Strategy.sol) is where you implement your own logic for your strategy. In particular:
+[`src/Strategy.sol`](contracts/Strategy.sol) is where you implement your own logic for your strategy. In particular:
 
 - Create a descriptive name for your strategy via `Strategy.name()`.
 - Invest your want tokens via `Strategy.adjustPosition()`.
