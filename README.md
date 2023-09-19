@@ -1,4 +1,6 @@
-# Yearn Strategy Foundry Mix
+# Yearn v2 Strategy Foundry Mix
+
+For v3 foundry strategy mix see [here](https://github.com/yearn/tokenized-strategy-foundry-mix)
 
 ## What you'll find here
 
